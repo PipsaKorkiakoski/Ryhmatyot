@@ -1,0 +1,9 @@
+{% if serialreader_list %}
+    <ul>
+        {% for serialreader in serialreader_list %}
+            <li><a href="/autokap_app/{{ serialreader.id }}/"></a></li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No coordinates are available.</p>
+{% endif %}

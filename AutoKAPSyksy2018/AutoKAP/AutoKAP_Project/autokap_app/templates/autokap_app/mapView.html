@@ -1,0 +1,114 @@
+{% extends 'site.html' %}
+{% block content %}
+<style>
+    /* Set the size of the div element that contains the map */
+    #map {
+        height: 400px; /* The height is 400 pixels */
+        width: 100%; /* The width is the width of the web page */
+    }
+</style>
+    <h3 id="lat">{{serialreader.latitude}}</h3>
+    <h3 id="lng">{{serialreader.longitude}}</h3>
+    <h3 id="spd">{{serialreader.speed}}</h3>
+    <h1 id="info"></h1>
+
+    <div>
+    Select a latitude file:
+    <input type="file" id="fileInputLat">
+    </div>
+    <div>
+        Select a longitude file:
+        <input type="file" id="fileInputLng">
+    </div>
+<div>
+    Select a speed file:
+    <input type="file" id="fileInputSpd">
+</div>
+    <div id="map"></div>
+<img src="http://172.20.10.9:8080/cam.mjpg"></img>
+<script>
+    var fileInputLat = document.getElementById('fileInputLat');
+    var fileInputLng = document.getElementById('fileInputLng');
+    var fileInputSpd = document.getElementById('fileInputSpd');
+
+    // Initialize and add the map
+    function initMap() {
+        lat = document.getElementById('lat').innerHTML;
+        lng = document.getElementById('lng').innerHTML;
+        var uluru = { lat: parseFloat(lat), lng: parseFloat(lng) };
+        // The map, centered at Uluru
+        var map = new google.maps.Map(
+            document.getElementById('map'), { zoom: 18, center: uluru });
+        // The marker, positioned at Uluru
+        var marker = new google.maps.Marker({ position: uluru, map: map });
+    }
+
+    function changeCoordinates() {
+        var fileLng = fileInputLng.files[0];
+        var textType = /text.*/;
+
+        if (fileLng.type.match(textType)) {
+            var readerLng = new FileReader();
+
+            readerLng.onload = function (e) {
+                document.getElementById('lng').innerHTML = readerLng.result;
+            }
+
+            readerLng.readAsText(fileLng);
+        } else {
+            document.getElementById('info').innerHTML = "File not supported!"
+        }
+
+        var fileLat = fileInputLat.files[0];
+
+        if (fileLat.type.match(textType)) {
+            var readerLat = new FileReader();
+
+            readerLat.onload = function (e) {
+                document.getElementById('lat').innerHTML = readerLat.result;
+            }
+
+            readerLat.readAsText(fileLat);
+        } else {
+            document.getElementById('info').innerHTML = "File not supported!"
+        }
+
+        var fileLat = fileInputLat.files[0];
+
+        if (fileSpd.type.match(textType)) {
+            var readerSpd = new FileReader();
+
+            readerSpd.onload = function (e) {
+                document.getElementById('spd').innerHTML = readerSpd.result;
+            }
+
+            readerSpd.readAsText(fileSpd);
+        } else {
+            document.getElementById('info').innerHTML = "File not supported!"
+        }
+    }
+
+    function loadMap() {
+		var video = document.createElement('video');
+		video.addEventListener('loadeddata', function (e) {
+			document.body.appendChild( video );
+		});
+
+		video.src = 'http://172.20.10.9:8080/cam.mjpg';
+		video.loop = true;
+		video.play();
+
+        setInterval(changeCoordinates,500)
+        setInterval(initMap, 1000);
+    }
+
+</script>
+<!--Load the API from the specified URL
+* The async attribute allows the browser to render the page while the API loads
+* The key parameter will contain your own API key (which is not needed for this tutorial)
+* The callback parameter executes the initMap() function
+-->
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=APIKEY&callback=loadMap">
+</script>
+{% endblock content %}

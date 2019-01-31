@@ -1,0 +1,33 @@
+//VÄÄÄRÄÄRÄÄÄ
+
+
+
+<h1>AutoKAP</h1>
+<div id="map"></div>
+<div id="coord">{{ variable |default "{ lat: 64.000, lng: 24.000 }" }}</div>
+<script>
+
+    function initMap()
+    {
+        var you = { lat: -25.344, lng: 131.036 };
+        var map = new google.maps.Map(
+            document.getElementById('map'), { zoom: 18, center: you });
+        
+        addMarker(document.getElementById('coord').innerText)
+
+    }
+
+    function addMarker(coords)
+    {
+        var marker = new google.maps.Marker({
+            position: coords,
+            map: map
+        });
+    }
+
+</script>
+
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAjgu78KlC61N3plW4h7gKZVlUQJEcSu8&callback=initMap">
+</script>
+<meta http-equiv="refresh" content="5">
